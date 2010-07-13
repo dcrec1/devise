@@ -1,10 +1,6 @@
 require 'devise/rails/routes'
 require 'devise/rails/warden_compat'
 
-# Include UrlHelpers in ActionController and ActionView as soon as they are loaded.
-ActiveSupport.on_load(:action_controller) { include Devise::Controllers::UrlHelpers }
-ActiveSupport.on_load(:action_view) { include Devise::Controllers::UrlHelpers }
-
 module Devise
   class Engine < ::Rails::Engine
     config.devise = Devise
@@ -23,6 +19,11 @@ module Devise
           "encryptor, please add config.encryptor = :sha1 to your configuration file." if Devise.mailer_sender
         :bcrypt
       end
+    end
+
+    initializer "devise.url_helpers" do
+      ActiveSupport.on_load(:action_controller) { include Devise::Controllers::UrlHelpers }
+      ActiveSupport.on_load(:action_view) { include Devise::Controllers::UrlHelpers }
     end
 
     unless Rails.env.production?
